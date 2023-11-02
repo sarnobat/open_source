@@ -1,5 +1,7 @@
 # open_source
 
+Start with data flow diagram / documentation
+
 ## C
 
 * detox (https://github.com/dharple/detox)
@@ -12,6 +14,7 @@
 * Kafka
 * Neo4j
 * Log4j
+   * pure programmatic
 
 ## Go
 * gedcom-tools
