@@ -14,6 +14,7 @@ Start with data flow diagram / documentation
 * Kafka
 * Neo4j
 * Fuse JNA
+* NanoHttpd
 * Log4j
    * pure programmatic
 
