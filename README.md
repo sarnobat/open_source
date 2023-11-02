@@ -13,11 +13,17 @@ Start with data flow diagram / documentation
 
 * Kafka
 * Neo4j
+* Fuse JNA
 * Log4j
    * pure programmatic
 
 ## Go
 * gedcom-tools
+* fuse (since it's not well supported)
+
+## Python
+* grc
+* fuse (since mac support is poor)
 
 ## Other
 * tldr (friendly people)
