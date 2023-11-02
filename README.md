@@ -22,6 +22,11 @@ Start with data flow diagram / documentation
 * gedcom-tools
 * fuse (since it's not well supported)
 
+## Javascript
+* text-diagram (callgraph) - port to Go?
+
+## Perl
+* graph-easy - port to Go?
 ## Python
 * grc
 * fuse (since mac support is poor)
