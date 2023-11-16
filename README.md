@@ -21,6 +21,7 @@ Start with data flow diagram / documentation
 * NanoHttpd
 * Log4j
    * pure programmatic
+ * Solr
 
 ## Go
 * gedcom-tools
