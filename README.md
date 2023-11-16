@@ -12,7 +12,7 @@ Start with data flow diagram / documentation
 * ffmpeg
 * ffplay
 * feh
-* libgedcom
+* gedcom-parse
 
 ## Java
 
