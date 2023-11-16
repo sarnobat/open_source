@@ -12,6 +12,7 @@ Start with data flow diagram / documentation
 * ffmpeg
 * ffplay
 * feh
+* libgedcom
 
 ## Java
 
@@ -22,6 +23,8 @@ Start with data flow diagram / documentation
 * Log4j
    * pure programmatic
  * Solr
+ * gedcom4j
+ * genealogyj
 
 ## Go
 * gedcom-tools
