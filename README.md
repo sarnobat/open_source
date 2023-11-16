@@ -9,6 +9,9 @@ Start with data flow diagram / documentation
 * vlc
 * rsync (start by looking at the fix you requested)
 * vim
+* ffmpeg
+* ffplay
+* feh
 
 ## Java
 
