@@ -25,6 +25,7 @@ Start with data flow diagram / documentation
  * Solr
  * gedcom4j
  * genealogyj
+ * Eclipse
 
 ## Go
 * gedcom-tools
@@ -44,3 +45,4 @@ Start with data flow diagram / documentation
 
 ## Other
 * tldr (friendly people)
+* gollum
