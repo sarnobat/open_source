@@ -13,6 +13,7 @@ Start with data flow diagram / documentation
 * ffplay
 * feh
 * gedcom-parse
+* zsh
 
 ## Java
 
