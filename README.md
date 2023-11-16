@@ -8,6 +8,7 @@ Start with data flow diagram / documentation
 * linux
 * vlc
 * rsync (start by looking at the fix you requested)
+* vim
 
 ## Java
 
@@ -27,6 +28,7 @@ Start with data flow diagram / documentation
 
 ## Perl
 * graph-easy - port to Go?
+
 ## Python
 * grc
 * fuse (since mac support is poor)
