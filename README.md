@@ -1,6 +1,6 @@
 # open_source
 
-Start with data flow diagram / documentation
+Start with data flow diagram / documentation. Maybe even filing tickets.
 
 ## C
 
