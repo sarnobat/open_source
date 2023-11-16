@@ -32,6 +32,8 @@ Start with data flow diagram / documentation
 
 ## Javascript
 * text-diagram (callgraph) - port to Go?
+* Google Maps?
+* Firefox?
 
 ## Perl
 * graph-easy - port to Go?
