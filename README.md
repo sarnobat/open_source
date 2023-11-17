@@ -14,6 +14,7 @@ Start with data flow diagram / documentation. Maybe even filing tickets.
 * feh
 * gedcom-parse
 * zsh
+* find
 
 ## Java
 
