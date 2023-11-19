@@ -32,6 +32,7 @@ Start with data flow diagram / documentation. Maybe even filing tickets.
 ## Go
 * gedcom-tools
 * fuse (since it's not well supported)
+* docker
 
 ## Javascript
 * text-diagram (callgraph) - port to Go?
