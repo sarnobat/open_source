@@ -33,6 +33,8 @@ Master:
  * gedcom4j
  * genealogyj
  * Eclipse
+ * Guava
+   * Google: https://github.com/google
 
 ## Go
 * gedcom-tools
