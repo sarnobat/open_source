@@ -5,6 +5,11 @@ Start with data flow diagram / documentation. Maybe even filing tickets.
 Master:
 * https://docs.google.com/spreadsheets/d/1xg_QHbZR0JKY1zQhgyexgtzw9mLe69F-i8Z6Q9AoHkg/edit#gid=446424919
 
+See also:
+```
+~/sarnobat.git/yEd/open_source.graphml
+```
+
 # Not master
 
 ## C
