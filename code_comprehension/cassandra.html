@@ -1,0 +1,428 @@
+<style>
+
+
+.link {
+  stroke: #777;
+  stroke-opacity: 0.3;
+  stroke-width: 1.0px;
+}
+
+.node circle {
+  fill: #ccc;
+  stroke: #000;
+  stroke-width: 0px;
+}
+
+.node text {
+  display: none;
+  font: 10px sans-serif;
+}
+
+.node:hover circle {
+  fill: #000;
+}
+
+.node:hover text {
+  display: inline;
+}
+
+.cell {
+  fill: none;
+  pointer-events: all;
+}
+
+</style>
+<body>
+<!-- <script src="http://d3js.org/d3.v3.min.js"></script> -->
+<script src="d3.v3.min.js"></script>
+<script>
+
+var width = 3200,
+    height = 2200;
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+var force = d3.layout.force()
+    .size([width, height]);
+
+//d3.csv("out.csv", function(error, links2) {
+
+	var links = getData();
+//  if (error) throw error;
+
+  var nodesByName = {};
+
+  // Create nodes for each unique source and target.
+  links.forEach(function(link) {
+    link.source = nodeByName(link.source);
+    link.target = nodeByName(link.target);
+  });
+
+  // Extract the array of nodes from the map by name.
+  var nodes = d3.values(nodesByName);
+
+  // Create the link lines.
+  var link = svg.selectAll(".link")
+      .data(links)
+    .enter().append("line")
+      .attr("class", "link");
+
+  // Create the node circles.
+  var node = svg.selectAll(".node")
+      .data(nodes)
+    .enter().append("g")
+      .attr("class", "node")
+      .call(force.drag);
+
+  var circle = node.append("circle")
+      .attr("r", 4.5);
+
+  var label = node.append("text")
+      .attr("dy", ".35em")
+      .text(function(d) { return d.name; });
+
+  // Start the force layout.
+  force
+      .nodes(nodes)
+      .links(links)
+      .on("tick", tick)
+      .start();
+
+  function tick() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
+
+    circle.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+
+    label
+        .attr("x", function(d) { return d.x + 8; })
+        .attr("y", function(d) { return d.y; });
+  }
+
+  function nodeByName(name) {
+    return nodesByName[name] || (nodesByName[name] = {name: name});
+  }
+//});
+
+function getData() {
+return  [
+  { source : "org.apache.cassandra.batchlog.BatchlogManager.calculatePageSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMeanPartitionSize()" },
+  { source : "org.apache.cassandra.cache.AutoSavingCache$CacheSerializer.getOrCreateCFSOrdinal()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "com.codahale.metrics.Counter.inc()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "com.google.common.collect.Iterables.get()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.concurrent.FutureTask.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.createMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.setCommitLogUpperBound()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.lifecycle.Tracker.switchMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()", target : "org.apache.cassandra.db.memtable.Memtable.switchOut()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.createPerDiskFlushWriters()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.newThreadPool()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.createPerDiskFlushWriters()", target : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.newThreadPool()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.newThreadPool()", target : "org.apache.cassandra.concurrent.ExecutorBuilderFactory.pooled()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.newThreadPool()", target : "org.apache.cassandra.concurrent.ExecutorFactory$Global.executorFactory()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PerDiskFlushExecutors.newThreadPool()", target : "org.apache.cassandra.concurrent.ExecutorFactory.withJmxInternal()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.call()", target : "com.codahale.metrics.Counter.dec()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.call()", target : "com.google.common.base.Throwables.throwIfUnchecked()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.call()", target : "org.apache.cassandra.db.commitlog.CommitLog.discardCompletedSegments()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.call()", target : "org.apache.cassandra.db.memtable.Memtable.getCommitLogLowerBound()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$PostFlush.call()", target : "org.apache.cassandra.db.memtable.Memtable.getFinalCommitLogUpperBound()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore$RefViewFragment.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore$ViewFragment.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.addSSTables()", target : "org.apache.cassandra.db.compaction.CompactionManager.submitBackground()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.addSSTables()", target : "org.apache.cassandra.db.lifecycle.Tracker.addSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()", target : "com.google.common.collect.Iterables.concat()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()", target : "org.apache.cassandra.index.SecondaryIndexManager.getAllIndexColumnFamilyStores()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.createCompactionStrategyInstance()", target : "org.apache.cassandra.schema.CompactionParams.klass()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.createCompactionStrategyInstance()", target : "org.apache.cassandra.schema.CompactionParams.options()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.createMemtable()", target : "org.apache.cassandra.db.memtable.Memtable$Factory.create()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.decorateKey()", target : "org.apache.cassandra.db.ColumnFamilyStore.getPartitioner()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.decorateKey()", target : "org.apache.cassandra.dht.IPartitioner.decorateKey()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.enableAutoCompaction()", target : "org.apache.cassandra.db.compaction.CompactionManager.submitBackground()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.enableAutoCompaction()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.enable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimateKeys()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimateKeys()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.estimatedKeys()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()", target : "org.apache.cassandra.db.ColumnFamilyStore$RefViewFragment.close()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()", target : "org.apache.cassandra.db.ColumnFamilyStore.selectAndReference()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()", target : "org.apache.cassandra.db.lifecycle.View.selectFunction()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.estimatedKeysForRanges()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.flushMemtable()", target : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtableIfCurrent()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.flushMemtable()", target : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.flushMemtable()", target : "org.apache.cassandra.db.memtable.Memtable.shouldSwitch()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.ColumnFamilyStore.flushMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.lifecycle.View.getCurrentMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.memtable.Memtable.isClean()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()", target : "org.apache.cassandra.db.memtable.Memtable.mayContainDataBefore()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getAndReferenceOverlappingLiveSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getComparator()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getCompressionParameters()", target : "org.apache.cassandra.schema.CompressionParams.asMap()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getCompressionParameters()", target : "org.apache.cassandra.schema.TableMetadataRef.getLocal()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()", target : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()", target : "org.apache.cassandra.db.lifecycle.View.liveSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()", target : "org.apache.cassandra.db.Keyspace.openAndGetStoreIfExists()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()", target : "org.apache.cassandra.db.Keyspace.openIfExists()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()", target : "org.apache.cassandra.schema.SchemaProvider.getTableMetadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()", target : "org.apache.cassandra.db.Keyspace.getName()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getLiveSSTables()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getLiveSSTables()", target : "org.apache.cassandra.db.lifecycle.View.liveSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanEstimatedCellPerPartitionCount()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanEstimatedCellPerPartitionCount()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getEstimatedCellPerPartitionCount()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanPartitionSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanPartitionSize()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getEstimatedPartitionSize()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanRowCount()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanRowCount()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getEstimatedPartitionSize()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getMeanRowCount()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getTotalRows()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "com.google.common.collect.ImmutableSet.copyOf()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "com.google.common.collect.ImmutableSet.of()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "com.google.common.collect.Iterables.addAll()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "com.google.common.collect.Lists.newArrayList()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "com.google.common.collect.Sets.difference()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.db.DecoratedKey.compareTo()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.db.lifecycle.View.liveSSTablesInBounds()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.dht.AbstractBounds.bounds()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getFirst()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getOverlappingLiveSSTables()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getLast()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPartitioner()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()", target : "org.apache.cassandra.db.ColumnFamilyStore.getLiveSSTables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getPendingRepair()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()", target : "org.apache.cassandra.repair.consistent.admin.PendingStat$Builder.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()", target : "org.apache.cassandra.repair.consistent.admin.PendingStat$Builder.addSSTable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()", target : "org.apache.cassandra.repair.consistent.admin.PendingStat$Builder.build()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()", target : "org.apache.cassandra.db.lifecycle.View.select()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.getUncompactingSSTables()", target : "org.apache.cassandra.db.lifecycle.Tracker.getUncompacting()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.cache.AutoSavingCache.keyIterator()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.cache.AutoSavingCache.remove()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.cache.CounterCacheKey.partitionKey()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.cache.CounterCacheKey.sameTable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.db.ColumnFamilyStore.decorateKey()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.db.DecoratedKey.getToken()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.invalidateCounterCache()", target : "org.apache.cassandra.dht.Bounds.isInBounds()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isAutoCompactionDisabled()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.isEnabled()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isCounterCacheEnabled()", target : "org.apache.cassandra.cache.AutoSavingCache.getCapacity()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isCounterCacheEnabled()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isCounterCacheEnabled()", target : "org.apache.cassandra.schema.TableMetadata.isCounter()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isTableIncrementalBackupsEnabled()", target : "org.apache.cassandra.config.DatabaseDescriptor.isIncrementalBackupsEnabled()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.isTableIncrementalBackupsEnabled()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()", target : "com.google.common.collect.Iterables.concat()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()", target : "org.apache.cassandra.db.ColumnFamilyStore$RefViewFragment.close()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()", target : "org.apache.cassandra.db.ColumnFamilyStore.selectAndReference()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()", target : "org.apache.cassandra.db.lifecycle.View.selectFunction()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.getKeySamples()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.lifecycle.View.getCurrentMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.memtable.Memtable.addMemoryUsageTo()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.db.memtable.Memtable.newMemoryUsage()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()", target : "org.apache.cassandra.index.SecondaryIndexManager.getAllIndexColumnFamilyStores()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.memtableWritesAreDurable()", target : "org.apache.cassandra.db.memtable.Memtable$Factory.writesAreDurable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.metadata()", target : "org.apache.cassandra.schema.TableMetadataRef.get()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.metricsFor()", target : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.pauseCompactionStrategies()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.pauseCompactionStrategies()", target : "org.apache.cassandra.db.ColumnFamilyStore.resumeAll()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.pauseCompactionStrategies()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.pause()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.resumeAll()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.resumeAll()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.resume()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "com.google.common.collect.Iterables.concat()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "com.google.common.collect.Iterables.transform()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.ColumnFamilyStore.pauseCompactionStrategies()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.compaction.CompactionManager$CompactionPauser.close()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.compaction.CompactionManager.getCompactionsMatching()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.compaction.CompactionManager.interruptCompactionForCFs()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.compaction.CompactionManager.pauseGlobalCompaction()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.compaction.CompactionManager.waitForCessation()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.lifecycle.Tracker.getCompacting()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()", target : "org.apache.cassandra.db.view.TableViews.allViewsCfs()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.select()", target : "com.google.common.base.Function.apply()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.select()", target : "com.google.common.collect.Lists.newArrayList()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.select()", target : "org.apache.cassandra.db.ColumnFamilyStore$ViewFragment.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.select()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.select()", target : "org.apache.cassandra.db.lifecycle.View.getAllMemtables()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.selectAndReference()", target : "org.apache.cassandra.db.ColumnFamilyStore$RefViewFragment.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.selectAndReference()", target : "org.apache.cassandra.db.ColumnFamilyStore.select()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.selectAndReference()", target : "org.apache.cassandra.io.sstable.format.SSTableReader.selfRef()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCommitLogUpperBound()", target : "org.apache.cassandra.db.commitlog.CommitLog.getCurrentPosition()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCommitLogUpperBound()", target : "org.apache.cassandra.db.commitlog.CommitLogPosition.compareTo()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCommitLogUpperBound()", target : "org.apache.cassandra.db.memtable.Memtable$LastCommitLogPosition.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCompactionParameters()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.overrideLocalParams()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCompactionParameters()", target : "org.apache.cassandra.schema.CompactionParams.fromMap()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.setCompactionParameters()", target : "org.apache.cassandra.schema.CompactionParams.validate()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtable()", target : "org.apache.cassandra.concurrent.ExecutorPlus.execute()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtable()", target : "org.apache.cassandra.db.ColumnFamilyStore$Flush.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtable()", target : "org.apache.cassandra.db.ColumnFamilyStore.logFlush()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtableIfCurrent()", target : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtableIfCurrent()", target : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtableIfCurrent()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.switchMemtableIfCurrent()", target : "org.apache.cassandra.db.lifecycle.View.getCurrentMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.toTokenRanges()", target : "com.google.common.base.Strings.isNullOrEmpty()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.toTokenRanges()", target : "org.apache.cassandra.dht.IPartitioner.getTokenFactory()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.toTokenRanges()", target : "org.apache.cassandra.dht.Range.<init>()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.toTokenRanges()", target : "org.apache.cassandra.dht.Token$TokenFactory.fromString()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()", target : "org.apache.cassandra.concurrent.ExecutorPlus.submit()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()", target : "org.apache.cassandra.db.lifecycle.Tracker.getView()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStore.waitForFlushes()", target : "org.apache.cassandra.db.lifecycle.View.getCurrentMemtable()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStoreMBean", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStoreMBean", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStoreMBean.getTableName()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTableName()" },
+  { source : "org.apache.cassandra.db.ColumnFamilyStoreMBean.isLeveledCompaction()", target : "org.apache.cassandra.db.compaction.CompactionStrategyManager.isLeveledCompaction()" },
+  { source : "org.apache.cassandra.db.DiskBoundaries.getBoundariesFromSSTableDirectory()", target : "org.apache.cassandra.db.ColumnFamilyStore.getDirectories()" },
+  { source : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()", target : "org.apache.cassandra.db.Keyspace.getName()" },
+  { source : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()", target : "org.apache.cassandra.schema.SchemaProvider.getTableMetadata()" },
+  { source : "org.apache.cassandra.db.Keyspace.openAndGetStore()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.db.ReadCommand", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.db.ReadCommand.metadata()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.SinglePartitionReadQuery", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.db.SinglePartitionReadQuery.metadata()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.SizeEstimatesRecorder.computeSizeEstimates()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.commitlog.AbstractCommitLogSegmentManager.flushDataFrom()", target : "org.apache.cassandra.db.ColumnFamilyStore.forceFlush()" },
+  { source : "org.apache.cassandra.db.commitlog.AbstractCommitLogSegmentManager.flushDataFrom()", target : "org.apache.cassandra.db.ColumnFamilyStore.memtableWritesAreDurable()" },
+  { source : "org.apache.cassandra.db.commitlog.AbstractCommitLogSegmentManager.flushDataFrom()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.db.compaction.AbstractCompactionStrategy", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.db.compaction.AbstractCompactionStrategy.getEstimatedRemainingTasks()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.AbstractCompactionStrategy.getSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.getFullyExpiredSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.getFullyExpiredSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getNeverPurgeTombstones()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.getFullyExpiredSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.maybeRefreshOverlaps()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.maybeRefreshOverlaps()", target : "org.apache.cassandra.db.ColumnFamilyStore.getNeverPurgeTombstones()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.maybeRefreshOverlaps()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTableName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.refreshOverlaps()", target : "org.apache.cassandra.db.ColumnFamilyStore.getAndReferenceOverlappingLiveSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionController.refreshOverlaps()", target : "org.apache.cassandra.db.ColumnFamilyStore.getNeverPurgeTombstones()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionIterator.getCompactionInfo()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager$7.inCorrectLocation()", target : "org.apache.cassandra.db.ColumnFamilyStore.getDirectories()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager$7.inCorrectLocation()", target : "org.apache.cassandra.db.ColumnFamilyStore.getPartitioner()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.interruptCompactionForCFs()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.isCompacting()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.lookupSSTable()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.sstablesInBounds()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.sstablesWithKey()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.submitBackground()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.submitBackground()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionManager.submitBackground()", target : "org.apache.cassandra.db.ColumnFamilyStore.isAutoCompactionDisabled()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionStrategyManager.reloadDiskBoundaries()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionStrategyManager.reloadDiskBoundaries()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTableName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionStrategyManager.reloadParamsFromJMX()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionStrategyManager.reloadParamsFromJMX()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTableName()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionStrategyManager.startup()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.CompactionTask.getDirectories()", target : "org.apache.cassandra.db.ColumnFamilyStore.getDirectories()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledCompactionStrategy.findDroppableSSTable()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getCandidatesFor()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getCandidatesFor()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getCompactingL0()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getCompactionCandidates()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getEstimatedTasks()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getEstimatedTasks()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getOverlappingStarvedSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getSSTablesForSTCS()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getSSTablesForSTCS()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMinimumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.LeveledManifest.getSSTablesForSTCS()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.PendingRepairManager.getOrCreate()", target : "org.apache.cassandra.db.ColumnFamilyStore.createCompactionStrategyInstance()" },
+  { source : "org.apache.cassandra.db.compaction.ShardManagerDiskAware$BoundaryTrackerDiskAware.getEndToken()", target : "org.apache.cassandra.db.ColumnFamilyStore$VersionedLocalRanges.get()" },
+  { source : "org.apache.cassandra.db.compaction.ShardManagerNoDisks$BoundaryTracker.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore$VersionedLocalRanges.get()" },
+  { source : "org.apache.cassandra.db.compaction.ShardManagerNoDisks$BoundaryTracker.getEndToken()", target : "org.apache.cassandra.db.ColumnFamilyStore$VersionedLocalRanges.get()" },
+  { source : "org.apache.cassandra.db.compaction.ShardManagerNoDisks.rangeSizeNonWrapping()", target : "org.apache.cassandra.db.ColumnFamilyStore$VersionedLocalRanges.iterator()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getEstimatedCompactionsByTasks()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getEstimatedCompactionsByTasks()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMinimumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getCompactionStrategyManager()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMinimumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.SizeTieredCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getUncompactingSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.TimeWindowCompactionStrategy.getCompactionCandidates()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMaximumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.TimeWindowCompactionStrategy.getCompactionCandidates()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMinimumCompactionThreshold()" },
+  { source : "org.apache.cassandra.db.compaction.TimeWindowCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.TimeWindowCompactionStrategy.getNextBackgroundSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getUncompactingSSTables()" },
+  { source : "org.apache.cassandra.db.compaction.UnifiedCompactionStrategy.getCompactableSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.db.compaction.UnifiedCompactionStrategy.getMetadata()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.compaction.UnifiedCompactionStrategy.getSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.getLiveSSTables()" },
+  { source : "org.apache.cassandra.db.filter.DataLimits$CQLLimits.estimateTotalResults()", target : "org.apache.cassandra.db.ColumnFamilyStore.estimateKeys()" },
+  { source : "org.apache.cassandra.db.filter.DataLimits$CQLLimits.estimateTotalResults()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMeanEstimatedCellPerPartitionCount()" },
+  { source : "org.apache.cassandra.db.filter.DataLimits$CQLLimits.estimateTotalResults()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.lifecycle.Tracker.maybeIncrementallyBackup()", target : "org.apache.cassandra.db.ColumnFamilyStore.isTableIncrementalBackupsEnabled()" },
+  { source : "org.apache.cassandra.db.lifecycle.Tracker.updateSizeTracking()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.db.partitions.UnfilteredPartitionIterator", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.db.repair.PendingAntiCompaction$AcquisitionCallable.acquireSSTables()", target : "org.apache.cassandra.db.ColumnFamilyStore.runWithCompactionsDisabled()" },
+  { source : "org.apache.cassandra.db.view.ViewBuilderTask.getCompactionInfo()", target : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()" },
+  { source : "org.apache.cassandra.db.view.ViewBuilderTask.getCompactionInfo()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.db.virtual.AbstractVirtualTable.metadata()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.index.SecondaryIndexManager.calculateIndexingPageSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMeanEstimatedCellPerPartitionCount()" },
+  { source : "org.apache.cassandra.index.SecondaryIndexManager.calculateIndexingPageSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.getMeanPartitionSize()" },
+  { source : "org.apache.cassandra.index.SecondaryIndexManager.calculateIndexingPageSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.index.sai.StorageAttachedIndex.hasClustering()", target : "org.apache.cassandra.db.ColumnFamilyStore.getComparator()" },
+  { source : "org.apache.cassandra.index.sai.StorageAttachedIndexGroup.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.index.sai.StorageAttachedIndexGroup.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.index.sai.plan.QueryController.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.getComparator()" },
+  { source : "org.apache.cassandra.index.sai.plan.QueryController.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.getPartitioner()" },
+  { source : "org.apache.cassandra.index.sai.plan.QueryController.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.index.sai.virtual.SegmentsSystemView.forEachIndex()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStores()" },
+  { source : "org.apache.cassandra.index.sasi.SASIIndexBuilder.getCompactionInfo()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.io.sstable.SimpleGaugeProvider.getAllReaders()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStores()" },
+  { source : "org.apache.cassandra.io.sstable.format.SortedTableVerifier.markAndThrow()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.metrics.KeyspaceMetrics$1.getValue()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStores()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$12.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.concatWithIndexes()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$12.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$14.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$16.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$17.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$18.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$19.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$20.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getLiveSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$21.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$22.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$23.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$25.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$27.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics$29.getValue()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics.getMemoryUsageWithIndexes()", target : "org.apache.cassandra.db.ColumnFamilyStore.getTracker()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics.totalNonSystemTablesSize()", target : "org.apache.cassandra.db.ColumnFamilyStore.getSSTables()" },
+  { source : "org.apache.cassandra.metrics.TableMetrics.totalNonSystemTablesSize()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStores()" },
+  { source : "org.apache.cassandra.repair.PreviewRepairTask.maybeSnapshotReplicas()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.repair.PreviewRepairTask.maybeSnapshotReplicas()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.repair.RepairSession.includesTables()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.repair.ValidationPartitionIterator", target : "org.apache.cassandra.db.ColumnFamilyStore$RefViewFragment" },
+  { source : "org.apache.cassandra.repair.consistent.LocalSessions.getPendingStats()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.repair.consistent.LocalSessions.getPendingStats()", target : "org.apache.cassandra.db.ColumnFamilyStore.getPendingRepairStats()" },
+  { source : "org.apache.cassandra.repair.consistent.admin.CleanupSummary.<init>()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.schema.SchemaProvider.getColumnFamilyStoreInstance()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.schema.SchemaProvider.getColumnFamilyStoreInstance()", target : "org.apache.cassandra.db.Keyspace.hasColumnFamilyStore()" },
+  { source : "org.apache.cassandra.service.StorageProxy.updateCoordinatorWriteLatencyTableMetric()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.service.StorageService.getKeyFromPartition()", target : "org.apache.cassandra.db.ColumnFamilyStore.getPartitioner()" },
+  { source : "org.apache.cassandra.service.StorageService.getKeyFromPartition()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.service.StorageService.getSplits()", target : "org.apache.cassandra.db.ColumnFamilyStore.estimatedKeysForRange()" },
+  { source : "org.apache.cassandra.service.StorageService.getSplits()", target : "org.apache.cassandra.db.ColumnFamilyStore.metadata()" },
+  { source : "org.apache.cassandra.service.StorageService.getSplits()", target : "org.apache.cassandra.db.Keyspace.getColumnFamilyStore()" },
+  { source : "org.apache.cassandra.service.StorageService.keySamples()", target : "org.apache.cassandra.db.ColumnFamilyStore.keySamples()" },
+  { source : "org.apache.cassandra.service.StorageServiceMBean", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.service.StorageServiceMBean.enableAutoCompaction()", target : "org.apache.cassandra.db.ColumnFamilyStore.enableAutoCompaction()" },
+  { source : "org.apache.cassandra.service.paxos.uncommitted.UncommittedTableData$FilterFactory", target : "org.apache.cassandra.db.ColumnFamilyStore" },
+  { source : "org.apache.cassandra.service.reads.repair.BlockingPartitionRepair.sendInitialRepairs()", target : "org.apache.cassandra.db.ColumnFamilyStore.metricsFor()" },
+  { source : "org.apache.cassandra.service.reads.repair.RepairedDataVerifier$SimpleVerifier.verify()", target : "org.apache.cassandra.db.ColumnFamilyStore.metricsFor()" },
+  { source : "org.apache.cassandra.service.snapshot.ListSnapshotsTask.call()", target : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()" },
+  { source : "org.apache.cassandra.service.snapshot.ListSnapshotsTask.call()", target : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()" },
+  { source : "org.apache.cassandra.service.snapshot.ListSnapshotsTask.call()", target : "org.apache.cassandra.db.ColumnFamilyStore.getKeyspaceName()" },
+  { source : "org.apache.cassandra.service.snapshot.TableSnapshot.computeTrueSizeBytes()", target : "org.apache.cassandra.db.ColumnFamilyStore.getFilesOfCfs()" },
+  { source : "org.apache.cassandra.service.snapshot.TableSnapshot.computeTrueSizeBytes()", target : "org.apache.cassandra.db.ColumnFamilyStore.getIfExists()" },
+  { source : "org.apache.cassandra.tools.ColumnFamilyStoreMBeanIterator$1.compare()", target : "org.apache.cassandra.db.ColumnFamilyStoreMBean.getTableName()" },
+  { source : "org.apache.cassandra.tools.NodeProbe.getSSTablesWithLevel()", target : "org.apache.cassandra.db.ColumnFamilyStoreMBean.getSSTablesForKeyWithLevel()" },
+  { source : "org.apache.cassandra.tools.NodeProbe.isLeveledCompaction()", target : "org.apache.cassandra.db.ColumnFamilyStoreMBean.isLeveledCompaction()" },
+  { source : "org.apache.cassandra.tools.NodeProbe.setCompactionThreshold()", target : "org.apache.cassandra.db.ColumnFamilyStoreMBean.setCompactionThresholds()" },
+  { source : "org.apache.cassandra.tools.nodetool.Info.getOffHeapMemoryUsed()", target : "org.apache.cassandra.db.ColumnFamilyStoreMBean.getTableName()" },
+];
+}
+</script>
