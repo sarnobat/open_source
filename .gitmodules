@@ -1,0 +1,63 @@
+[submodule "redis"]
+	path = c/redis
+	url = git@github.com:redis/redis.git
+[submodule "pytorch"]
+	path = cpp/pytorch
+	url = git@github.com:pytorch/pytorch.git
+[submodule "postgresql"]
+	path = c/postgresql
+	url = https://git.postgresql.org/git/postgresql.git
+[submodule "rsync"]
+	path = c/rsync
+	url = git@github.com:RsyncProject/rsync.git
+[submodule "zfs"]
+	path = c/zfs
+	url = git@github.com:openzfs/zfs.git
+[submodule "cpython"]
+	path = c/cpython
+	url = git@github.com:python/cpython.git
+[submodule "Graph-Easy"]
+	path = perl/Graph-Easy
+	url = git@github.com:ironcamel/Graph-Easy.git
+[submodule "vlc"]
+	path = c/vlc
+	url = git@github.com:videolan/vlc.git
+[submodule "mongo"]
+	path = cpp/mongo
+	url = git@github.com:mongodb/mongo.git
+[submodule "findutils"]
+	path = c/findutils
+	url = git@github.com:aixoss/findutils.git
+[submodule "pandoc"]
+	path = haskell/pandoc
+	url = git@github.com:jgm/pandoc.git
+[submodule "ccze"]
+	path = c/ccze
+	url = git@github.com:cornet/ccze.git
+[submodule "bash"]
+	path = c/bash
+	url = git@github.com:bminor/bash.git
+[submodule "FFmpeg"]
+	path = c/FFmpeg
+	url = git@github.com:FFmpeg/FFmpeg.git
+[submodule "UniversalMediaServer"]
+	path = java/UniversalMediaServer
+	url = git@github.com:UniversalMediaServer/UniversalMediaServer.git
+[submodule "git"]
+	path = c/git
+	url = git@github.com:git/git.git
+[submodule "duckdb"]
+	path = cpp/duckdb
+	url = git@github.com:duckdb/duckdb.git
+[submodule "sqlite"]
+	path = c/sqlite
+	url = git@github.com:sqlite/sqlite.git
+[submodule "jdk"]
+	path = c/jdk
+	url = git@github.com:openjdk/jdk.git
+[submodule "rust/bat"]
+	path = rust/bat
+	url = git@github.com:sharkdp/bat.git
+[submodule "mysql-server"]
+	path = cpp/mysql-server
+	url = git@github.com:mysql/mysql-server.git
