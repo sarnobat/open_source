@@ -79,3 +79,6 @@
 [submodule "go/mermaid-ascii"]
 	path = go/mermaid-ascii
 	url = git@github.com:AlexanderGrooff/mermaid-ascii.git
+[submodule "rust/findutils"]
+	path = rust/findutils
+	url = git@github.com:uutils/findutils.git
