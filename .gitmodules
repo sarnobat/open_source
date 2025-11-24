@@ -61,3 +61,21 @@
 [submodule "mysql-server"]
 	path = cpp/mysql-server
 	url = git@github.com:mysql/mysql-server.git
+[submodule "go/gaf"]
+	path = go/gaf
+	url = git@github.com:zyona3/gaf.git
+[submodule "go/asciigraph"]
+	path = go/asciigraph
+	url = git@github.com:guptarohit/asciigraph.git
+[submodule "c/boxes"]
+	path = c/boxes
+	url = git@github.com:ascii-boxes/boxes.git
+[submodule "rust/as-tree"]
+	path = rust/as-tree
+	url = git@github.com:jez/as-tree.git
+[submodule "python/adia"]
+	path = python/adia
+	url = git@github.com:pylover/adia.git
+[submodule "go/mermaid-ascii"]
+	path = go/mermaid-ascii
+	url = git@github.com:AlexanderGrooff/mermaid-ascii.git
