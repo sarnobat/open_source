@@ -61,3 +61,6 @@
 [submodule "mysql-server"]
 	path = cpp/mysql-server
 	url = git@github.com:mysql/mysql-server.git
+[submodule "java/elasticsearch"]
+	path = java/elasticsearch
+	url = git@github.com:elastic/elasticsearch.git
