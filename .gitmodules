@@ -64,3 +64,6 @@
 [submodule "java/elasticsearch"]
 	path = java/elasticsearch
 	url = git@github.com:elastic/elasticsearch.git
+[submodule "c/boxes"]
+	path = c/boxes
+	url = git@github.com:ascii-boxes/boxes.git
